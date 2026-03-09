@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { createClient } from "@/lib/supabase";
@@ -57,8 +57,14 @@ export default function CheckoutPage() {
     router.push(`/order-confirmation?id=${data.id}`);
   };
 
+  // Redirect to cart if empty (must be done in useEffect to avoid SSR issues)
+  useEffect(() => {
+    if (items.length === 0) {
+      router.push("/cart");
+    }
+  }, [items.length, router]);
+
   if (items.length === 0) {
-    router.push("/cart");
     return null;
   }
 
